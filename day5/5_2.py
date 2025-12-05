@@ -10,11 +10,8 @@ for line in f:
     r = line.split("-")
     ranges.append([int(r[0]), int(r[1])])
 
-def sortByLeftBound(e):
-    return e[0]
-ranges.sort(key=sortByLeftBound)
-
-# Merge (assume sorted by left bound)
+# Sort and merge ovelapping ranges
+ranges.sort()
 index = 0
 while True:
     if index >= len(ranges) - 1:
@@ -23,13 +20,15 @@ while True:
     left = ranges[index]
     right = ranges[index + 1]
 
-    # Merge if overlap detected
-    if right[0] <= left[1]:
-        if right[1] > left[1]:
-            left[1] = right[1]
-        ranges.pop(index + 1)
-    else:
+    # No overlap
+    if left[1] < right[0]:
         index += 1
+        continue
+
+    # Merge on overlap
+    if right[1] > left[1]:
+        left[1] = right[1]
+    ranges.pop(index + 1)
 
 # Sum up ranges
 sum = 0
